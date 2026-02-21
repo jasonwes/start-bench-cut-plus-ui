@@ -16,7 +16,7 @@
       <div class="zone-content">
         @if (currentAssignment()[slot]; as player) {
           <div class="placed-player">
-            <img [src]="player.headshotUrl" [alt]="player.name" class="placed-headshot" />
+            <img [src]="getHeadshotUrl(player)" [alt]="player.name" class="placed-headshot" (error)="onHeadshotError(player.id)" />
             <span class="placed-name">{{ player.name }}</span>
             @if (player.stats && (player.stats.ppg != null || player.stats.rpg != null || player.stats.apg != null)) {
               <span class="placed-stats">
@@ -43,7 +43,7 @@
         (onDragEnd)="dragEnd()"
         [attr.data-player-id]="player.id">
         <div class="card-image-wrap">
-          <img [src]="player.headshotUrl" [alt]="player.name" class="player-headshot" />
+          <img [src]="getHeadshotUrl(player)" [alt]="player.name" class="player-headshot" (error)="onHeadshotError(player.id)" />
         </div>
         <div class="card-name-strip">
           <span class="player-name">{{ player.name }}</span>

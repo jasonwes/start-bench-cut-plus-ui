@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { Player, RosterAssignment, RosterSlot } from './models/player.model';
 import { DUMMY_GROUPINGS } from './data/dummy-players';
 import { NbaDataService } from './services/nba-data.service';
+import { placeholderHeadshot } from './utils/headshot';
 
 const DRAG_SCOPE = 'players';
 const GROUP_SIZE = 3;
@@ -60,6 +61,22 @@ export class GameComponent implements OnInit {
 
   readonly currentPlayers = computed(() => this.groupings()[this.currentIndex()] ?? []);
   readonly currentAssignment = computed(() => this.assignment());
+
+  /** Player IDs for which the headshot image failed to load (404 etc.); use placeholder. */
+  readonly failedHeadshotIds = signal<Set<string>>(new Set());
+
+  getHeadshotUrl(player: Player): string {
+    if (this.failedHeadshotIds().has(player.id)) return placeholderHeadshot(player.name);
+    return player.headshotUrl || placeholderHeadshot(player.name);
+  }
+
+  onHeadshotError(playerId: string): void {
+    this.failedHeadshotIds.update((s) => {
+      const next = new Set(s);
+      next.add(playerId);
+      return next;
+    });
+  }
 
   ngOnInit(): void {
     this.nbaData.getPlayers().subscribe((players) => {

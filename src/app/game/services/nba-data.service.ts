@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, of, catchError } from 'rxjs';
 
 import { Player } from '../models/player.model';
+import { getNbaHeadshotUrl } from '../utils/headshot';
 
 /** JSON shape produced by scripts/fetch_nba_players.py */
 export interface NbaPlayerJson {
@@ -18,12 +19,6 @@ export interface NbaPlayerJson {
 }
 
 const DATA_URL = 'data/nba-players-2025-26.json';
-
-/** Placeholder image when headshotUrl is empty (e.g. until we add headshot API) */
-function placeholderHeadshot(name: string): string {
-  const initials = name.split(' ').map((n) => n[0]).join('');
-  return `https://placehold.co/200x260/252640/a0a0b0?text=${encodeURIComponent(initials)}`;
-}
 
 @Injectable({ providedIn: 'root' })
 export class NbaDataService {
@@ -41,10 +36,13 @@ export class NbaDataService {
   }
 
   private toPlayer(p: NbaPlayerJson): Player {
+    const explicitUrl = p.headshotUrl?.trim();
+    const headshotUrl =
+      explicitUrl || getNbaHeadshotUrl(p.id);
     return {
       id: p.id,
       name: p.name,
-      headshotUrl: p.headshotUrl?.trim() || placeholderHeadshot(p.name),
+      headshotUrl,
       stats: p.stats
         ? {
             ppg: p.stats.ppg ?? undefined,
