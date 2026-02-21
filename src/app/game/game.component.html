@@ -1,0 +1,72 @@
+<div class="game-container dark-theme">
+  <header class="game-header">
+    <h1>Start Bench Cut</h1>
+    <p class="subtitle">Drag each player to Start, Bench, or Cut</p>
+  </header>
+
+  <!-- Drop zones -->
+  <section class="drop-zones" aria-label="Roster slots">
+    @for (slot of slots; track slot) {
+    <div
+      [class]="getSlotClass(slot)"
+      [pDroppable]="SCOPE"
+      (onDrop)="drop(slot)"
+      [attr.data-slot]="slot">
+      <span class="zone-label">{{ getSlotLabel(slot) }}</span>
+      <div class="zone-content">
+        @if (currentAssignment()[slot]; as player) {
+          <div class="placed-player">
+            <img [src]="player.headshotUrl" [alt]="player.name" class="placed-headshot" />
+            <span class="placed-name">{{ player.name }}</span>
+            @if (player.stats && (player.stats.ppg != null || player.stats.rpg != null || player.stats.apg != null)) {
+              <span class="placed-stats">
+                {{ player.stats.ppg ?? '-' }} PPG · {{ player.stats.rpg ?? '-' }} RPG · {{ player.stats.apg ?? '-' }} APG
+              </span>
+            }
+            <button type="button" class="clear-slot" (click)="clearSlot(slot)" [attr.aria-label]="'Remove from ' + getSlotLabel(slot)">×</button>
+          </div>
+        } @else {
+          <span class="zone-placeholder">Drop here</span>
+        }
+      </div>
+    </div>
+    }
+  </section>
+
+  <!-- Player cards (draggable) -->
+  <section class="players-row" aria-label="Players to assign">
+    @for (player of currentPlayers(); track player.id) {
+      <div
+        class="player-card"
+        [pDraggable]="SCOPE"
+        (onDragStart)="dragStart(player)"
+        (onDragEnd)="dragEnd()"
+        [attr.data-player-id]="player.id">
+        <div class="card-image-wrap">
+          <img [src]="player.headshotUrl" [alt]="player.name" class="player-headshot" />
+        </div>
+        <div class="card-name-strip">
+          <span class="player-name">{{ player.name }}</span>
+        </div>
+        @if (player.stats && (player.stats.ppg != null || player.stats.rpg != null || player.stats.apg != null)) {
+          <div class="card-stats">
+            <span>{{ player.stats.ppg ?? '-' }} PPG</span>
+            <span>{{ player.stats.rpg ?? '-' }} RPG</span>
+            <span>{{ player.stats.apg ?? '-' }} APG</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Navigation -->
+  <nav class="game-nav" aria-label="Group navigation">
+    <button type="button" pButton class="p-button-text nav-btn" [disabled]="currentIndex() === 0" (click)="previous()">
+      <span class="nav-label">&lt; Previous</span>
+    </button>
+    <span class="nav-indicator">Group {{ currentIndex() + 1 }} of {{ groupings.length }}</span>
+    <button type="button" pButton class="p-button-text nav-btn" [disabled]="currentIndex() >= groupings.length - 1" (click)="next()">
+      <span class="nav-label">Next &gt;</span>
+    </button>
+  </nav>
+</div>
