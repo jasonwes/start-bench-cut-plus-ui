@@ -23,7 +23,8 @@ import {
   ɵɵdefineNgModule,
   ɵɵdirectiveInject,
   ɵɵlistener
-} from "./chunk-RY6LNRNQ.js";
+} from "./chunk-G2LLFY66.js";
+import "./chunk-P6U2JBMQ.js";
 import "./chunk-WDMUDEB6.js";
 
 // node_modules/primeng/fesm2022/primeng-dragdrop.mjs

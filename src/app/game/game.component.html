@@ -64,9 +64,39 @@
     <button type="button" pButton class="p-button-text nav-btn" [disabled]="currentIndex() === 0" (click)="previous()">
       <span class="nav-label">&lt; Previous</span>
     </button>
-    <span class="nav-indicator">Group {{ currentIndex() + 1 }} of {{ groupings.length }}</span>
-    <button type="button" pButton class="p-button-text nav-btn" [disabled]="currentIndex() >= groupings.length - 1" (click)="next()">
+    <span class="nav-indicator">Group {{ currentIndex() + 1 }} of {{ groupings().length }}</span>
+    <button type="button" pButton class="p-button-text nav-btn" [disabled]="currentIndex() >= groupings().length - 1" (click)="next()">
       <span class="nav-label">Next &gt;</span>
     </button>
   </nav>
+  <div class="filter-row" aria-label="Minutes per game filter">
+    <button
+      type="button"
+      pButton
+      class="mpg-control-btn mpg-control-minus"
+      (click)="decrementMpgThreshold()"
+      [disabled]="mpgThreshold() <= mpgMin"
+      [attr.aria-label]="'Decrease mpg filter to ' + (mpgThreshold() - 1)">
+      −
+    </button>
+    <button
+      type="button"
+      class="mpg-control-value"
+      [class.mpg-control-value-enabled]="mpgFilterEnabled()"
+      [class.mpg-control-value-disabled]="!mpgFilterEnabled()"
+      (click)="toggleMpgFilter()"
+      [attr.aria-pressed]="mpgFilterEnabled()"
+      [attr.aria-label]="(mpgFilterEnabled() ? 'Filter on' : 'Filter off') + ', ' + mpgThreshold() + ' minutes per game. Click to toggle filter.'">
+      {{ mpgThreshold() }} mpg
+    </button>
+    <button
+      type="button"
+      pButton
+      class="mpg-control-btn mpg-control-plus"
+      (click)="incrementMpgThreshold()"
+      [disabled]="mpgThreshold() >= mpgMax"
+      [attr.aria-label]="'Increase mpg filter to ' + (mpgThreshold() + 1)">
+      +
+    </button>
+  </div>
 </div>

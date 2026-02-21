@@ -1,0 +1,2 @@
+# For fetch_nba_players.py (run with Python 3.8+)
+nba_api>=1.4

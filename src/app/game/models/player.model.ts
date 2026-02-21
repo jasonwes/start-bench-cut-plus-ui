@@ -11,6 +11,8 @@ export interface Player {
     ppg?: number;
     rpg?: number;
     apg?: number;
+    /** Minutes per game (for pool filter e.g. 10+ mpg) */
+    mpg?: number;
     [key: string]: number | undefined;
   };
 }

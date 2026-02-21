@@ -1,4 +1,8 @@
 import {
+  CommonModule,
+  DOCUMENT
+} from "./chunk-QV7QEH3R.js";
+import {
   EventBus,
   equals,
   isArray,
@@ -18,10 +22,6 @@ import {
   toTokenKey
 } from "./chunk-MJOAWJPF.js";
 import {
-  CommonModule,
-  DOCUMENT
-} from "./chunk-RAQ7DFL4.js";
-import {
   APP_INITIALIZER,
   Component,
   Directive,
@@ -30,7 +30,6 @@ import {
   Input,
   NgModule,
   PLATFORM_ID,
-  Subject,
   TemplateRef,
   effect,
   inject,
@@ -48,7 +47,10 @@ import {
   ɵɵgetInheritedFactory,
   ɵɵprojection,
   ɵɵprojectionDef
-} from "./chunk-RY6LNRNQ.js";
+} from "./chunk-G2LLFY66.js";
+import {
+  Subject
+} from "./chunk-P6U2JBMQ.js";
 import {
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
@@ -2020,4 +2022,4 @@ export {
   PRIME_NG_CONFIG,
   providePrimeNG
 };
-//# sourceMappingURL=chunk-M7O3Z5NB.js.map
+//# sourceMappingURL=chunk-4KD4MDHH.js.map
