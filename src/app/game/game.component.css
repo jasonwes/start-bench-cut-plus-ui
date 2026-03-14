@@ -110,8 +110,15 @@
 }
 
 .placed-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
   font-size: 0.7rem;
   color: var(--sbc-text-muted);
+}
+
+.placed-stats-row {
+  display: block;
 }
 
 .clear-slot {
@@ -196,12 +203,22 @@
 
 .card-stats {
   display: flex;
-  justify-content: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.25rem;
   padding: 0.35rem 0.5rem;
   font-size: 0.75rem;
   color: var(--sbc-text-muted);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.card-stats-row-sub {
+  font-size: 0.7rem;
 }
 
 /* Navigation */

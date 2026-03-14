@@ -25,6 +25,23 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "data")
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "nba-players-2025-26.json")
 
 
+def _div(row, col, divisor, decimals):
+    val = row.get(col)
+    if val is None or str(val) == "nan":
+        return None
+    return round(float(val) / divisor, decimals)
+
+
+def _pct(row, num_col, den_col):
+    den = row.get(den_col)
+    if den is None or str(den) == "nan" or float(den) == 0:
+        return None
+    num = row.get(num_col)
+    if num is None or str(num) == "nan":
+        return None
+    return round(float(num) / float(den), 3)
+
+
 def main():
     print(f"Fetching active players for {SEASON}...")
     try:
@@ -56,8 +73,9 @@ def main():
         suffixes=("", "_stats"),
     )
 
-    # Build list matching our Angular Player interface: id, name, headshotUrl (placeholder), stats { ppg, rpg, apg, mpg }
-    # LeagueDashPlayerStats has MIN (total minutes); mpg = MIN / GP
+    # Build list matching our Angular Player interface: id, name, headshotUrl, stats
+    # LeagueDashPlayerStats: MIN, PTS, REB, AST, STL, BLK, FGM, FGA, FG3M, FG3A
+    # eFG% = (FGM + 0.5 * FG3M) / FGA; 3pt% = FG3M / FG3A; STOCKS = STL + BLK per game; PRA = PTS+REB+AST per game
     out = []
     for _, row in merged.iterrows():
         pid = str(int(row["PERSON_ID"]))
@@ -65,22 +83,38 @@ def main():
         gp = row.get("GP")
         if gp is not None and str(gp) != "nan" and float(gp) > 0:
             gp = float(gp)
-            ppg = round(float(row["PTS"]) / gp, 1) if row.get("PTS") is not None and str(row["PTS"]) != "nan" else None
-            rpg = round(float(row["REB"]) / gp, 1) if row.get("REB") is not None and str(row["REB"]) != "nan" else None
-            apg = round(float(row["AST"]) / gp, 1) if row.get("AST") is not None and str(row["AST"]) != "nan" else None
+            ppg = _div(row, "PTS", gp, 1)
+            rpg = _div(row, "REB", gp, 1)
+            apg = _div(row, "AST", gp, 1)
             min_val = row.get("MIN")
             mpg = round(float(min_val) / gp, 1) if min_val is not None and str(min_val) != "nan" else None
+            stl_pg = _div(row, "STL", gp, 1)
+            blk_pg = _div(row, "BLK", gp, 1)
+            stocks = round(stl_pg + blk_pg, 1) if stl_pg is not None and blk_pg is not None else None
+            pra = round(ppg + rpg + apg, 1) if ppg is not None and rpg is not None and apg is not None else None
+            fg3_pct = _pct(row, "FG3M", "FG3A")
+            fgm, fga = row.get("FGM"), row.get("FGA")
+            if fga is not None and str(fga) != "nan" and float(fga) > 0 and fgm is not None and str(fgm) != "nan":
+                fg3m = row.get("FG3M")
+                fg3m_val = float(fg3m) if fg3m is not None and str(fg3m) != "nan" else 0
+                efg_pct = round((float(fgm) + 0.5 * fg3m_val) / float(fga), 3)
+            else:
+                efg_pct = None
         else:
-            ppg = rpg = apg = mpg = None
+            ppg = rpg = apg = mpg = stocks = pra = fg3_pct = efg_pct = None
         out.append({
             "id": pid,
             "name": name,
-            "headshotUrl": "",  # Filled by frontend placeholder or headshot API later
+            "headshotUrl": "",
             "stats": {
                 "ppg": ppg,
                 "rpg": rpg,
                 "apg": apg,
                 "mpg": mpg,
+                "fg3_pct": fg3_pct,
+                "efg_pct": efg_pct,
+                "stocks": stocks,
+                "pra": pra,
             },
         })
 

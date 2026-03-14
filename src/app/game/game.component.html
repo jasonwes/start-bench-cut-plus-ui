@@ -18,10 +18,16 @@
           <div class="placed-player">
             <img [src]="getHeadshotUrl(player)" [alt]="player.name" class="placed-headshot" (error)="onHeadshotError(player.id)" />
             <span class="placed-name">{{ player.name }}</span>
-            @if (player.stats && (player.stats.ppg != null || player.stats.rpg != null || player.stats.apg != null)) {
-              <span class="placed-stats">
-                {{ player.stats.ppg ?? '-' }} PPG · {{ player.stats.rpg ?? '-' }} RPG · {{ player.stats.apg ?? '-' }} APG
-              </span>
+            @if (player.stats) {
+              <div class="placed-stats">
+                <span class="placed-stats-row">{{ player.stats.ppg ?? '–' }} PPG · {{ player.stats.rpg ?? '–' }} RPG · {{ player.stats.apg ?? '–' }} APG</span>
+                @if (player.stats.fg3_pct != null || player.stats.efg_pct != null) {
+                  <span class="placed-stats-row">{{ formatPct(player.stats.fg3_pct) }} 3pt · {{ formatPct(player.stats.efg_pct) }} eFG</span>
+                }
+                   @if (player.stats.stocks != null) {
+                     <span class="placed-stats-row">{{ player.stats.stocks }} STOCKS</span>
+                   }
+              </div>
             }
             <button type="button" class="clear-slot" (click)="clearSlot(slot)" [attr.aria-label]="'Remove from ' + getSlotLabel(slot)">×</button>
           </div>
@@ -48,11 +54,25 @@
         <div class="card-name-strip">
           <span class="player-name">{{ player.name }}</span>
         </div>
-        @if (player.stats && (player.stats.ppg != null || player.stats.rpg != null || player.stats.apg != null)) {
+        @if (player.stats) {
           <div class="card-stats">
-            <span>{{ player.stats.ppg ?? '-' }} PPG</span>
-            <span>{{ player.stats.rpg ?? '-' }} RPG</span>
-            <span>{{ player.stats.apg ?? '-' }} APG</span>
+            <div class="card-stats-row">
+              <span>{{ player.stats.ppg ?? '–' }} PPG</span>
+              <span>{{ player.stats.rpg ?? '–' }} RPG</span>
+              <span>{{ player.stats.apg ?? '–' }} APG</span>
+            </div>
+            @if (player.stats.fg3_pct != null || player.stats.efg_pct != null) {
+              <div class="card-stats-row card-stats-row-sub">
+                <span>{{ formatPct(player.stats.fg3_pct) }} 3pt</span>
+                <span>{{ formatPct(player.stats.efg_pct) }} eFG</span>
+              </div>
+            }
+            @if (player.stats.stocks != null || player.stats.pra != null) {
+              <div class="card-stats-row card-stats-row-sub">
+                <span>{{ player.stats.stocks ?? '–' }} STOCKS</span>
+                   <!-- PRA stat removed -->
+              </div>
+            }
           </div>
         }
       </div>

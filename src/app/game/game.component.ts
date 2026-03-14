@@ -78,6 +78,12 @@ export class GameComponent implements OnInit {
     });
   }
 
+  /** Format decimal as percentage (e.g. 0.372 -> "37.2%"). */
+  formatPct(value: number | undefined | null): string {
+    if (value == null) return '–';
+    return (value * 100).toFixed(1) + '%';
+  }
+
   ngOnInit(): void {
     this.nbaData.getPlayers().subscribe((players) => {
       this.allPlayers.set(players);

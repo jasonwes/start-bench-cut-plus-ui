@@ -15,6 +15,10 @@ export interface NbaPlayerJson {
     rpg?: number | null;
     apg?: number | null;
     mpg?: number | null;
+    fg3_pct?: number | null;
+    efg_pct?: number | null;
+    stocks?: number | null;
+    pra?: number | null;
   };
 }
 
@@ -49,6 +53,10 @@ export class NbaDataService {
             rpg: p.stats.rpg ?? undefined,
             apg: p.stats.apg ?? undefined,
             mpg: p.stats.mpg ?? undefined,
+            fg3_pct: p.stats.fg3_pct ?? undefined,
+            efg_pct: p.stats.efg_pct ?? undefined,
+            stocks: p.stats.stocks ?? undefined,
+            pra: p.stats.pra ?? undefined,
           }
         : undefined,
     };
